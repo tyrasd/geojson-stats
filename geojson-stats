@@ -1,0 +1,54 @@
+#!/usr/bin/env node
+
+var stats = require('./'),
+    opt = require('optimist')
+        .usage('Usage: $0 FILE [properties]')
+        .boolean('version').describe('version','display software version')
+        .boolean('help').describe('help','print this help message'),
+    argv = opt.argv,
+    fs = require('fs'),
+    concat = require('concat-stream'),
+    numeric = require('geojson-numeric'),
+    Table = require('cli-table');
+
+if (argv.help) {
+    return opt.showHelp();
+}
+if (argv.version) {
+    return process.stdout.write(require('./package.json').version+'\n');
+}
+
+(argv._.length ? fs.createReadStream(argv._.shift()) : process.stdin).pipe(concat(calculateStats));
+
+function calculateStats(data) {
+    var dataStats = stats(numeric(JSON.parse(data)), argv._);
+
+    function formatNum(num, precision) {
+        if (precision === undefined) precision = 2;
+        return Number(num).toFixed(precision);
+    }
+
+    dataStats = dataStats.filter(function(stat) {
+        return stat.count > 0;
+    });
+
+    var columns = dataStats.map(function(stat) {
+            return stat.title;
+        }),
+        columnHeads = [""].concat(columns),
+        columnAligns = ["left"].concat(columns.map(function() { return "right"; }));
+
+    var table = new Table({ head: columnHeads, colAligns: columnAligns });
+    table.push({'n':	dataStats.map(function(stat) { return formatNum(stat.count,0)+"  ";        })});
+    table.push({'x̄':	dataStats.map(function(stat) { return formatNum(stat.mean);                })});
+    table.push({'x̃':	dataStats.map(function(stat) { return formatNum(stat.median);              })});
+    table.push({'σ':	dataStats.map(function(stat) { return formatNum(Math.sqrt(stat.variance)); })});
+    table.push({'min':	dataStats.map(function(stat) { return formatNum(stat.min);                 })});
+    table.push({'max':	dataStats.map(function(stat) { return formatNum(stat.max);                 })});
+    table.push({'∑':	dataStats.map(function(stat) { return formatNum(stat.sum);                 })});
+
+    process.stdout.write(table.toString());
+    process.stdout.write('\n');
+}
+
+process.stdout.on('error', function() {});
