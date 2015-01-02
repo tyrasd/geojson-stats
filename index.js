@@ -1,5 +1,5 @@
-var turf = require('turf');
 var geojsonArea = require('geojson-area').geometry;
+var geojsonLength = require('geojson-length');
 var simplestats = require('simple-statistics');
 
 function stats( geojson, properties ) {
@@ -25,13 +25,8 @@ function stats( geojson, properties ) {
             }).dist*unitFactor;
         }
         var output = {};
-        if (feature.geometry.type === "LineString") {
-            output.length = getLineStringLength(feature.geometry.coordinates);
-        }
-        if (feature.geometry.type === "MultiLineString") {
-            output.length = feature.geometry.coordinates.reduce(function(prev, coords) {
-                return prev+getLineStringLength(coords);
-            }, 0);
+        if (feature.geometry.type === "LineString" || feature.geometry.type === "MultiLineString") {
+            output.length = geojsonLength(feature.geometry);
         }
         if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
             output.area = geojsonArea(feature.geometry);
