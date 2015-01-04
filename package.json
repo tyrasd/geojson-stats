@@ -1,6 +1,6 @@
 {
   "name": "geojson-stats",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Calculates some stats for GeoJSON input.",
   "main": "index.js",
   "scripts": {
