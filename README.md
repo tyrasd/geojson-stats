@@ -11,6 +11,8 @@ usage
     npm install -g geojson-stats
     geojson-stats file.geojson
 
+![](https://cloud.githubusercontent.com/assets/1927298/5631886/810c0464-95ca-11e4-85e3-883a129ed44d.png)
+
 ### as a **library**:
 
     npm install geojson-stats
