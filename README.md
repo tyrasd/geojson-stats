@@ -1,5 +1,5 @@
-geojson-length
-==============
+geojson-stats
+=============
 
 Calculate statistics of [GeoJSON](http://geojson.org/) data.
 
