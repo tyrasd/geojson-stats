@@ -29,7 +29,7 @@
     "cli-table": "tyrasd/cli-table.git",
     "geojson-area": "0.1.0",
     "geojson-length": "0.1.1",
-    "geojson-numeric": "0.1.0",
+    "geojson-numeric": "0.2.1",
     "simple-statistics": "0.9.0"
 
   },
